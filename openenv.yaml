@@ -1,0 +1,30 @@
+name: "InventoryAI-v1"
+version: "2.1.0"
+author: "Amit and Rishabh"
+license: "MIT"
+description: "A real-world inventory management and demand forecasting environment for supply chain agents."
+tags: ["supply-chain", "logistics", "optimization", "strategic-reasoning"]
+requirements:
+  - "numpy"
+  - "pydantic"
+  - "google-generativeai"
+  - "fastapi"
+  - "Author": "Amit and Rishabh"
+interface:
+  observation: "WarehouseObservation"
+  action: "WarehouseAction"
+  reward: "Reward"
+tasks:
+  - id: "1"
+    name: "Safety First"
+    difficulty: "easy"
+    description: "Minimize stockouts. Graded on Customer Service Level (CSL)."
+  - id: "2"
+    name: "Profit Hero"
+    difficulty: "medium"
+    description: "Maximize net profit under budget constraints. Graded on Profit and Efficiency."
+  - id: "3"
+    name: "SOTA Crisis Manager"
+    difficulty: "hard"
+    description: "Handle stochastic crises with perishable stock, price elasticity, and market intelligence."
+
