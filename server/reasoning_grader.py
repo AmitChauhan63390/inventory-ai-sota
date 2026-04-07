@@ -22,7 +22,7 @@ class ReasoningGrader:
         - Is reasoning non-empty and substantial (>20 chars)?
         """
         if not reasoning or len(reasoning) < 20:
-            return 0.0
+            return 0.0001
 
         score = 0.0
         reasoning_lower = reasoning.lower()
@@ -62,4 +62,4 @@ class ReasoningGrader:
         elif len(reasoning) >= 50:
             score += 0.05
 
-        return round(min(1.0, score), 4)
+        return round(max(0.0001, min(0.9999, score)), 4)

@@ -1,5 +1,6 @@
 import sys
 import os
+import math
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fastapi import FastAPI, Request, Query
@@ -9,6 +10,12 @@ from typing import Optional
 from models import WarehouseAction, WarehouseObservation
 from server.simulator import InventorySimulator
 import json
+
+
+def _normalize_reward(raw_reward: float) -> float:
+    """Normalize a raw financial step reward to strictly (0, 1) using sigmoid."""
+    sigma = 1.0 / (1.0 + math.exp(-float(raw_reward) / 500.0))
+    return max(0.0001, min(0.9999, sigma))
 
 app = FastAPI(title="InventoryAI-v1 Benchmark", version="2.1.0")
 
@@ -116,9 +123,17 @@ def step(action: dict): # accept dictionary to be backward compatible and dynami
             raise e
 
     obs, reward, done, info = current_env.step(validated_action)
+
+    if done:
+        # Use the final task score as the reward for the terminal step
+        task_score = float(info.get("episode_result", {}).get("final_score", 0.5))
+        normalized_reward = max(0.0001, min(0.9999, task_score))
+    else:
+        normalized_reward = _normalize_reward(reward)
+
     return {
         "observation": obs.model_dump(),
-        "reward": float(reward),
+        "reward": normalized_reward,
         "done": done,
         "info": info
     }

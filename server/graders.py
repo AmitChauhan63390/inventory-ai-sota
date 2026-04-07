@@ -73,7 +73,7 @@ def grade_crisis_response(crisis_event: dict, agent_action, outcome) -> float:
     # Avoid division by zero
     outcome_improvement = (outcome.net_profit - counterfactual_score) / max(1.0, abs(counterfactual_score + 1))
 
-    return float(round(
+    return strict_clamp(round(
         0.20 * float(crisis_acknowledged) +
         0.40 * float(action_correct) +
         0.40 * min(1.0, max(0.0, outcome_improvement))
