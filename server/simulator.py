@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import os
 from typing import Tuple, Dict, Any, List
 
 from models import WarehouseObservation, WarehouseAction, Reward, RewardMetrics, WarehouseState, EpisodeResult, Batch
@@ -45,8 +46,10 @@ class InventorySimulator:
         self.supplier_registry = SupplierRegistry()
         self.crisis_generator = CrisisEventGenerator(self.rng)
         self.reasoning_grader = ReasoningGrader()
-        self.sota_grader = SOTAReasoningGrader()
-        self.reset()
+        self.grader_sota = SOTAReasoningGrader(
+            api_key=os.getenv("HF_TOKEN"),
+            base_url=os.getenv("API_BASE_URL")
+        )
         
     def _generate_base_demand(self, day: int) -> float:
         """Baseline demand without pricing effects."""
@@ -163,7 +166,8 @@ class InventorySimulator:
     def step(self, action: WarehouseAction) -> Tuple[WarehouseObservation, float, bool, dict]:
         # 1. Reasoning Grade
         if self.task_id == 3:
-            reasoning_score = self.sota_grader.grade(action.reasoning, self._get_observation().model_dump(), action.model_dump())
+            reasoning_score = self.grader_sota.grade(action.reasoning, self._get_observation().model_dump(), action.model_dump())
+
         else:
             reasoning_score = self.reasoning_grader.score(action.reasoning, self.state.model_dump())
             

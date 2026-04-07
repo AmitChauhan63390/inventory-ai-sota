@@ -7,9 +7,7 @@ tags: ["supply-chain", "logistics", "optimization", "strategic-reasoning"]
 requirements:
   - "numpy"
   - "pydantic"
-  - "google-generativeai"
   - "fastapi"
-  - "Author": "Amit and Rishabh"
 interface:
   observation: "WarehouseObservation"
   action: "WarehouseAction"

@@ -11,8 +11,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application
 COPY . .
 
-# Environment variable for Gemini API Key (Empty by default)
-ENV GOOGLE_API_KEY=""
+# Standard Secret Configuration for OpenEnv Benchmark
+ENV HF_TOKEN=""
+ENV API_BASE_URL="https://router.huggingface.co/v1"
+ENV MODEL_NAME="Qwen/Qwen2.5-72B-Instruct"
 
 # Hugging Face exposes port 7860
 EXPOSE 7860

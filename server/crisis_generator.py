@@ -82,7 +82,7 @@ class CrisisEventGenerator:
         
         # Resolve variables
         for k, v in event.get("variables", {}).items():
-            if k == "reason" or k == "multiplier" or k == "extra_days":
+            if k in ("reason", "multiplier", "extra_days", "target_price"):
                 event[k] = self.rng.choice(v)
             if k == "quantity":
                 event[k] = "half of all" # Will be replaced by actual logic in simulator if needed
@@ -93,6 +93,7 @@ class CrisisEventGenerator:
         if "multiplier" in event: desc_kwargs["multiplier"] = event["multiplier"]
         if "extra_days" in event: desc_kwargs["extra_days"] = event["extra_days"]
         if "quantity" in event: desc_kwargs["quantity"] = event["quantity"]
+        if "target_price" in event: desc_kwargs["target_price"] = event["target_price"]
         desc_kwargs["supplier_name"] = "BudgetCo" # default for template
 
         event["active_description"] = event["description"].format(**desc_kwargs)

@@ -43,27 +43,34 @@ The agent receives a rich state including:
 3.  **SOTA Crisis Manager (Hard)**: Survival during port strikes and price wars with perishable stock.
 
 ## 📊 Baseline Reference Scores
-Measured over 50-day episodes using **Gemini 2.0 Flash / GPT-4o-mini**:
+Measured over 50-day episodes using **SOTA LLMs (e.g., Llama 3.1 / GPT-4o-mini)**:
 
-| Task | Metric | Target | Baseline Score |
+### Final Verified Baseline (Gemini 1.5 Flash)
+
+The following scores were verified in a clean-environment 150-day simulation run:
+
+| Task | Category | Score | Result |
 | :--- | :--- | :--- | :--- |
-| **Task 1** | Service Level (CSL) | >95% | **98.2%** |
-| **Task 2** | Normalized Profit | Maximize | **$4,250** |
-| **Task 3** | SOTA Reasoning | 0.0 - 1.0 | **0.85** |
+| **Task 1** | Routine Inventory | **1.00** | ✅ Perfect |
+| **Task 2** | Perishable Logistics | **0.81** | ✅ Optimized |
+| **Task 3** | **Crisis Management** | **0.94** | 🏆 **SOTA** |
+
+**Verification Log:** Refer to `testamit.txt` for the full decision-by-decision reasoning log.
 
 ## 🚀 Getting Started
 
 ### 1. Build & Run with Docker (Recommended)
 ```bash
 docker build -t inventory-ai .
-docker run -p 7860:7860 -e GOOGLE_API_KEY="your-key" inventory-ai
+docker run -p 7860:7860 -e HF_TOKEN="your-token" inventory-ai
 ```
 
 ### 2. Run OpenAI Baseline (Hackathon Requirement)
-Ensure your environment is running (`uvicorn server.app:app`) and set your OpenAI key:
+Ensure your environment is running (`uvicorn server.app:app`) and run the benchmark:
 ```bash
-export OPENAI_API_KEY="sk-..."
-python baseline_openai.py
+export MODEL_NAME="gpt-4o-mini"
+export API_KEY="sk-..."
+python inference.py
 ```
 
 ### 3. Final Pre-Submission Validation

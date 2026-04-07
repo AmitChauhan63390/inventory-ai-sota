@@ -9,15 +9,13 @@ description = "A High-Fidelity Supply Chain Environment for the Meta OpenEnv Hac
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "openenv-core>=0.2.0",
     "numpy",
-    "pydantic",
-    "google-generativeai",
     "fastapi",
     "uvicorn",
     "httpx",
     "openai",
-    "python-dotenv"
+    "python-dotenv",
+    "openenv-core>=0.2.0"
 ]
 
 [project.scripts]
