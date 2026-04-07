@@ -1,2 +1,13 @@
 __pycache__/
 *.pyc
+*.log
+*.txt
+*.pyo
+.DS_Store
+.venv/
+venv/
+dummy_inference.py
+inference_final.py
+inference_sota.py
+probe_key.py
+run_benchmark.sh
