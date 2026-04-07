@@ -24,7 +24,7 @@ class SOTAReasoningGrader:
         Returns a score from 0.0 to 1.0.
         """
         if not self.client or not reasoning or len(reasoning) < 10:
-            return 0.5 # Default middle score if no model or reasoning
+            return 0.5  # Default middle score if no model or reasoning
         
         prompt = f"""
         You are a Supply Chain Professor grading a student's daily warehouse decision.
@@ -55,7 +55,8 @@ class SOTAReasoningGrader:
                 temperature=0.0
             )
             data = json.loads(completion.choices[0].message.content)
-            return float(data.get("score", 0.5))
+            raw = float(data.get("score", 0.5))
+            return max(0.001, min(0.999, raw))
         except Exception as e:
             # Fallback for models that don't support response_format="json_object"
             try:
@@ -65,10 +66,10 @@ class SOTAReasoningGrader:
                 match = re.search(r'\{.*\}', text, re.DOTALL)
                 if match:
                     data = json.loads(match.group())
-                    return float(data.get("score", 0.5))
+                    raw = float(data.get("score", 0.5))
+                    return max(0.001, min(0.999, raw))
             except:
                 pass
             print(f"SOTA Grading Error: {e}")
             
         return 0.5 # Fallback
-
