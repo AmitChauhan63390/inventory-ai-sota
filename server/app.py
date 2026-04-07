@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Query
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from typing import Optional
@@ -54,9 +54,24 @@ class ResetRequest(BaseModel):
     seed: Optional[int] = None
 
 @app.post("/reset")
-def reset(req: ResetRequest):
+def reset(req: Optional[ResetRequest] = None, task_id: Optional[int] = Query(None)):
     global current_env
-    current_env = InventorySimulator(task_id=req.task_id, seed=req.seed)
+    
+    # Priority: 
+    # 1. Query parameter
+    # 2. Body parameter
+    # 3. Default (1)
+    
+    final_task_id = 1
+    final_seed = None
+    
+    if task_id is not None:
+        final_task_id = task_id
+    elif req is not None:
+        final_task_id = req.task_id
+        final_seed = req.seed
+        
+    current_env = InventorySimulator(task_id=int(final_task_id), seed=final_seed)
     obs = current_env.reset()
     return obs.model_dump()
 
