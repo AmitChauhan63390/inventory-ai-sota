@@ -1,12 +1,15 @@
-def normalize(val: float, min_val: float, max_val: float) -> float:
-    return max(0.0, min(1.0, (val - min_val) / (max_val - min_val)))
+# Strict (0, 1) bounds required by OpenEnv Phase 2 validator
+EPSILON = 0.001
 
-def strict_clamp(val: float) -> float:
-    """Ensure the score is strictly between 0 and 1 (exclusive)."""
-    return max(0.0001, min(0.9999, float(val)))
+def clamp_strict(score: float) -> float:
+    """Clamp score to strictly within (0, 1) — never 0.0 or 1.0."""
+    return max(EPSILON, min(1.0 - EPSILON, score))
+
+def normalize(val: float, min_val: float, max_val: float) -> float:
+    return clamp_strict((val - min_val) / (max_val - min_val))
 
 def grade_task_1(episode_result) -> float:
-    return strict_clamp(round(episode_result.service_level, 4))
+    return float(round(clamp_strict(episode_result.service_level), 4))
 
 def grade_task_2(episode_result) -> float:
     profit_score = normalize(episode_result.net_profit, min_val=-2000, max_val=3000)
@@ -18,7 +21,7 @@ def grade_task_2(episode_result) -> float:
         0.30 * service_score +
         0.20 * supplier_efficiency
     ) * (0.90) + (0.10 * episode_result.avg_reasoning_score) # As mentioned "Contributes 10% to Task 2 final score"
-    return strict_clamp(round(final_score, 4))
+    return float(round(clamp_strict(final_score), 4))
 
 def grade_task_3(episode_result) -> float:
     # Task 3 is highly volatile, so we use wider bounds for profit normalization
@@ -38,7 +41,7 @@ def grade_task_3(episode_result) -> float:
         0.15 * episode_result.avg_reasoning_score
     )
 
-    return strict_clamp(round(base_score, 4))
+    return float(round(clamp_strict(base_score), 4))
 
 
 def simulate_no_action(crisis_event, outcome) -> float:
@@ -73,8 +76,8 @@ def grade_crisis_response(crisis_event: dict, agent_action, outcome) -> float:
     # Avoid division by zero
     outcome_improvement = (outcome.net_profit - counterfactual_score) / max(1.0, abs(counterfactual_score + 1))
 
-    return strict_clamp(round(
+    return float(round(clamp_strict(
         0.20 * float(crisis_acknowledged) +
         0.40 * float(action_correct) +
-        0.40 * min(1.0, max(0.0, outcome_improvement))
-    , 4))
+        0.40 * clamp_strict(outcome_improvement)
+    ), 4))
